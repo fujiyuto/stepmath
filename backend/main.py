@@ -1,26 +1,28 @@
-from fastapi import FastAPI, Query
-from dto.item import Item
-from typing import Annotated
-from pydantic import Field
+from contextlib import asynccontextmanager
 
-app = FastAPI()
+from fastapi import FastAPI
+from sqlmodel import SQLModel
+
+from db import engine
+from exceptions import AppException, app_exception_handler
+from routers import users, problems, conversations
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """アプリ起動時にSupabaseへテーブルを自動作成する。"""
+    SQLModel.metadata.create_all(engine)
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
+
+app.include_router(users.router)
+app.include_router(problems.router)
+app.include_router(conversations.router)
+app.add_exception_handler(AppException, app_exception_handler)
 
 
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
-
-# @app.get("/{id}")
-# async def detail(id: int):
-#     return {"message": f'id:{id}を受信しました'}
-
-# クエリパラメータ
-@app.get("/items", tags=["item"])
-async def read_item(needy: str, skip: int = 0, limit: int = 0, q: Annotated[str | None, Query(max_length=3)] = None):
-    return {"message": f'クエリパラメータ、skip:{skip}, limit:{limit}, 必須のパラメータ:{needy}'}
-
-# リクエストボディ
-@app.post("/items")
-async def create_item(item: Item):
-    print(item.name + item.price)
-    return item

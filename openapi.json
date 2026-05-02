@@ -1,0 +1,562 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "FastAPI",
+        "version": "0.1.0"
+    },
+    "paths": {
+        "/users/me": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get User",
+                "description": "ユーザー詳細を取得する。\n\nArgs:\n    user_id: JWTから取得したユーザーID\n    session: DBセッション\n\nReturns:\n    email: メールアドレス\n    username: ユーザー名",
+                "operationId": "get_user_users_me_get",
+                "parameters": [
+                    {
+                        "name": "X-Token",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "X-Token"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserGetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Edit User",
+                "description": "ユーザー情報を編集する。\n\nArgs:\n    user_id: JWTから取得したユーザーID\n    user_edit: ユーザー編集リクエスト\n    session: DBセッション\n\nReturns:\n    username: ユーザー名",
+                "operationId": "edit_user_users_me_patch",
+                "parameters": [
+                    {
+                        "name": "X-Token",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "X-Token"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserEditRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Delete User",
+                "description": "ユーザーを削除する。\n\nArgs:\n    user_id: 削除するユーザーID（クエリパラメータ）\n    session: DBセッション\n\nReturns:\n    deleted: 削除可否\n    message: メッセージ",
+                "operationId": "delete_user_users_me_delete",
+                "parameters": [
+                    {
+                        "name": "X-Token",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "X-Token"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create User",
+                "description": "ユーザーを登録する。\n\nArgs:\n    user_id: JWTから取得したユーザーID\n    user_create_request: ユーザー登録リクエスト\n    session: DBセッション\n\nReturns:\n    created: 登録完了可否\n    message: メッセージ",
+                "operationId": "create_user_users__post",
+                "parameters": [
+                    {
+                        "name": "X-Token",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "X-Token"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/problems/": {
+            "get": {
+                "tags": [
+                    "problems"
+                ],
+                "summary": "Get Problems",
+                "description": "問題一覧を取得する。\n\nArgs:\n    session: DBセッション\n\nReturns:\n    list[Problem]: 問題一覧",
+                "operationId": "get_problems_problems__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/problems/{problem_id}": {
+            "get": {
+                "tags": [
+                    "problems"
+                ],
+                "summary": "Get Problem",
+                "description": "問題詳細を取得する。\n\nArgs:\n    problem_id: 問題ID\n    session: DBセッション\n\nReturns:\n    Problem: 問題詳細",
+                "operationId": "get_problem_problems__problem_id__get",
+                "parameters": [
+                    {
+                        "name": "problem_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Problem Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/conversations/": {
+            "post": {
+                "tags": [
+                    "conversations"
+                ],
+                "summary": "Create Conversation",
+                "description": "会話を作成する。\n\nArgs:\n    conversation_create: 会話作成リクエスト（user_id, problem_id）\n    session: DBセッション\n\nReturns:\n    Conversation: 作成した会話",
+                "operationId": "create_conversation_conversations__post",
+                "parameters": [
+                    {
+                        "name": "X-Token",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "X-Token"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ConversationCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/conversations/{conversation_id}/messages": {
+            "post": {
+                "tags": [
+                    "conversations"
+                ],
+                "summary": "Send Message",
+                "description": "チャットメッセージを送信する。\n\nArgs:\n    conversation_id: 会話ID\n    message_create: メッセージ送信リクエスト\n    session: DBセッション\n\nReturns:\n    Message: 送信したメッセージ",
+                "operationId": "send_message_conversations__conversation_id__messages_post",
+                "parameters": [
+                    {
+                        "name": "conversation_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Conversation Id"
+                        }
+                    },
+                    {
+                        "name": "X-Token",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "X-Token"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MessageCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/": {
+            "get": {
+                "summary": "Root",
+                "operationId": "root__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ConversationCreateRequest": {
+                "properties": {
+                    "problem_id": {
+                        "type": "integer",
+                        "title": "Problem Id"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "problem_id"
+                ],
+                "title": "ConversationCreateRequest",
+                "description": "会話作成時のリクエストモデル。\n\nproblem_id: 問題ID"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "MessageCreateRequest": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "maxLength": 500,
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "message"
+                ],
+                "title": "MessageCreateRequest",
+                "description": "メッセージ送信時のリクエストモデル\n\nmessage: メッセージ"
+            },
+            "UserCreateRequest": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "title": "Email"
+                    },
+                    "username": {
+                        "type": "string",
+                        "maxLength": 30,
+                        "minLength": 3,
+                        "title": "Username"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "email",
+                    "username"
+                ],
+                "title": "UserCreateRequest",
+                "description": "ユーザー登録時にリクエストクラス\n\nemail：メールアドレス\nusername: ユーザー名"
+            },
+            "UserEditRequest": {
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "title": "Username"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "username"
+                ],
+                "title": "UserEditRequest",
+                "description": "ユーザー編集時のリクエストモデル\n\nusername: ユーザー名"
+            },
+            "UserGetResponse": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "title": "Email"
+                    },
+                    "username": {
+                        "type": "string",
+                        "title": "Username"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "email",
+                    "username"
+                ],
+                "title": "UserGetResponse",
+                "description": "ユーザー詳細取得レスポンスモデル\n\nemail: メールアドレス\nusername: ユーザー名"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    },
+                    "input": {
+                        "title": "Input"
+                    },
+                    "ctx": {
+                        "type": "object",
+                        "title": "Context"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        }
+    }
+}
