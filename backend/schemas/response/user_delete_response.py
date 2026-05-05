@@ -7,7 +7,4 @@ class UserDeleteResponse(BaseModel):
     message: メッセージ
     """
 
-    def __init__(self, message: str):
-        self.message = message
-
     message: str

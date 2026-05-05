@@ -7,7 +7,4 @@ class UserEditResponse(BaseModel):
     username: ユーザー名
     """
 
-    def __init__(self, user: User):
-        self.username = user.username
-
     username: str

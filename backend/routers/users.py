@@ -31,7 +31,8 @@ async def get_user(
         email: メールアドレス
         username: ユーザー名 
     """
-    return UserGetResponse(user_service.get_user(user_id, session))
+    user = user_service.get_user(user_id, session)
+    return UserGetResponse(email=user.email, username=user.username)
 
 
 @router.post("/")
@@ -77,7 +78,8 @@ async def edit_user(
     Returns:
         username: ユーザー名
     """
-    return UserEditResponse(user_service.edit_user(user_id, user_edit_request.username, session))
+    user = user_service.edit_user(user_id, user_edit_request.username, session)
+    return UserEditResponse(username=user.username)
 
 
 @router.delete("/me")

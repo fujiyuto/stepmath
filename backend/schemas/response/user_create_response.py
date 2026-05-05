@@ -6,7 +6,4 @@ class UserCreateResponse(BaseModel):
     message: メッセージ
     """
 
-    def __init__(self, created: bool, message: str):
-        self.message = message
-
     message: str

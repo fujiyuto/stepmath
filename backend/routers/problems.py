@@ -4,6 +4,8 @@ from fastapi import APIRouter, Depends
 from sqlmodel import Session
 
 from db import get_db
+from schemas.request import ProblemCreateRequest
+from schemas.response import ProblemCreateResponse
 from services import problem_service
 
 router = APIRouter(
@@ -11,32 +13,20 @@ router = APIRouter(
     tags=["problems"],
 )
 
-
-@router.get("/")
-async def get_problems(session: Annotated[Session, Depends(get_db)]):
-    """問題一覧を取得する。
-
-    Args:
-        session: DBセッション
-
-    Returns:
-        list[Problem]: 問題一覧
-    """
-    return problem_service.get_problems(session)
-
-
-@router.get("/{problem_id}")
-async def get_problem(
-    problem_id: int,
-    session: Annotated[Session, Depends(get_db)],
-):
-    """問題詳細を取得する。
+@router.post("/")
+async def create_problem(
+    problem_create_request: ProblemCreateRequest,
+    session: Annotated[Session, Depends(get_db)]
+) -> ProblemCreateResponse:
+    """問題を作成する。Claude APIを使用する。
 
     Args:
-        problem_id: 問題ID
+        problem_create_request: 問題作成リクエスト
         session: DBセッション
-
     Returns:
-        Problem: 問題詳細
+        ProblemCreateResponse: 問題作成レスポンス
     """
-    return problem_service.get_problem(problem_id, session)
+    
+    problem_id = problem_service.create_problem(problem_create_request.field_id, session)
+
+    return ProblemCreateResponse(problem_id=problem_id)

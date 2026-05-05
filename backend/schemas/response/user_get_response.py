@@ -8,10 +8,6 @@ class UserGetResponse(BaseModel):
     username: ユーザー名
     """
 
-    def __init__(self, user: User):
-        self.email = user.email
-        self.username = user.username
-
     email: str
     username: str
 
