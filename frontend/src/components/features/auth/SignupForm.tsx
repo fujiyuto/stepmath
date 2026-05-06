@@ -73,8 +73,7 @@ export default function SignupForm() {
 
       // バックエンドにユーザーレコードを登録
       const token = data.session.access_token;
-      const userId = data.user!.id;
-      await api.post<SignupResponse>("/users/", { id: userId, email, username }, token);
+      await api.post<SignupResponse>("/users/", { email, username }, token);
 
       router.push("/home");
     } catch (err) {
