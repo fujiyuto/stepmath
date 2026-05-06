@@ -9,7 +9,8 @@ class _Settings(BaseSettings):
     """
 
     DATABASE_URL: str
-    SUPABASE_JWT_SECRET: str
+    SUPABASE_URL: str
+    SUPABASE_SERVICE_ROLE_KEY: str
     ENVIRONMENT: str
 
     model_config = {"env_file": Path(__file__).parent / ".env", "extra": "ignore"}

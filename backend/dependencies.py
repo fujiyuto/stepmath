@@ -2,35 +2,41 @@ import uuid
 from typing import Annotated
 
 import jwt
+from jwt import PyJWKClient
 from fastapi import Header, HTTPException
 
-from db import settings
+from settings import settings
+
+jwks_client = PyJWKClient(f"{settings.SUPABASE_URL}/auth/v1/.well-known/jwks.json")
 
 
 async def get_auth_user_id(
-    token: Annotated[str | None, Header(alias="X-Token")] = None,
+    authorization: Annotated[str | None, Header()] = None,
 ) -> uuid.UUID:
-    """X-TokenヘッダーからアクセストークンをデコードしてユーザーIDを返す。
+    """AuthorizationヘッダーからアクセストークンをデコードしてユーザーIDを返す。
 
     Args:
-        token: X-Tokenヘッダーの値（Supabase JWTアクセストークン）
+        authorization: Authorizationヘッダーの値（Bearer <Supabase JWTアクセストークン>）
 
     Returns:
         uuid.UUID: トークンのsubクレームから取得したユーザーID
 
     Raises:
-        HTTPException: X-Tokenヘッダーがない場合 401
+        HTTPException: Authorizationヘッダーがない場合 401
         HTTPException: トークンの有効期限が切れている場合 401
         HTTPException: トークンが無効な場合 401
     """
-    if token is None:
-        raise HTTPException(status_code=401, detail="X-Tokenヘッダーがありません")
+    if authorization is None or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Authorizationヘッダーがありません")
+
+    token = authorization.removeprefix("Bearer ")
 
     try:
+        signing_key = jwks_client.get_signing_key_from_jwt(token)
         payload = jwt.decode(
             token,
-            settings.SUPABASE_JWT_SECRET,
-            algorithms=["HS256"],
+            signing_key.key,
+            algorithms=["ES256"],
             audience="authenticated",
         )
         return uuid.UUID(payload["sub"])

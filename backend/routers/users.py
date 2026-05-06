@@ -1,7 +1,9 @@
+import logging
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+import httpx
+from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 
 from db import get_db
@@ -9,6 +11,9 @@ from dependencies import get_auth_user_id
 from schemas.request import UserCreateRequest, UserEditRequest
 from schemas.response import UserGetResponse, UserCreateResponse, UserEditResponse, UserDeleteResponse
 from services import user_service
+from settings import settings
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/users",
@@ -53,12 +58,28 @@ async def create_user(
         message: メッセージ
     """
 
-    user_service.create_user(
-        user_id,
-        user_create_request.email,
-        user_create_request.username,
-        session,
-    )
+    try:
+        user_service.create_user(
+            user_id,
+            user_create_request.email,
+            user_create_request.username,
+            session,
+        )
+    except Exception:
+        # DB登録失敗 → Supabase Auth ユーザーを削除してロールバック
+        async with httpx.AsyncClient() as client:
+            try:
+                await client.delete(
+                    f"{settings.SUPABASE_URL}/auth/v1/admin/users/{user_id}",
+                    headers={
+                        "Authorization": f"Bearer {settings.SUPABASE_SERVICE_ROLE_KEY}",
+                        "apikey": settings.SUPABASE_SERVICE_ROLE_KEY,
+                    },
+                )
+            except Exception:
+                logger.error("Supabase Auth ロールバック失敗: user_id=%s", user_id)
+        raise HTTPException(status_code=500, detail="ユーザー登録に失敗しました")
+
     return UserCreateResponse(message="登録が完了しました")
 
 
