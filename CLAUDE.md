@@ -1,7 +1,7 @@
-# stepmath
+# enthink
 
 ## プロジェクト概要
-大学受験数学の難問をStep分解して段階的に解かせるEdTechサービス。
+思考の言語化を通じて、数学的思考力を鍛えるEdTechサービス。
 
 ## 技術スタック
 - Frontend: Next.js + KaTeX
