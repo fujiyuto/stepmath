@@ -7,7 +7,7 @@ type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE";
  * @param path - APIパス（例: "/users"）
  * @param method - HTTPメソッド
  * @param body - リクエストボディ（任意）
- * @param token - Supabase アクセストークン（任意）。渡すと X-Token ヘッダーに付与される
+ * @param token - Supabase アクセストークン（任意）。渡すと Authorization: Bearer ヘッダーに付与される
  * @returns レスポンスのJSONデータ
  */
 async function request<T>(path: string, method: HttpMethod, body?: unknown, token?: string): Promise<T> {
@@ -15,7 +15,7 @@ async function request<T>(path: string, method: HttpMethod, body?: unknown, toke
     method,
     headers: {
       "Content-Type": "application/json",
-      ...(token ? { "X-Token": token } : {}),
+      ...(token ? { "Authorization": `Bearer ${token}` } : {}),
     },
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });

@@ -43,7 +43,7 @@ export default function SignupForm() {
    * @param e - フォームイベント
    * @returns なし
    */
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
     setApiError(null);
@@ -55,9 +55,9 @@ export default function SignupForm() {
     }
 
     setIsLoading(true);
+    const supabase = createClient();
     try {
       // Supabase Auth にユーザーを登録
-      const supabase = createClient();
       const { data, error } = await supabase.auth.signUp({ email, password });
 
       if (error) {
@@ -73,7 +73,14 @@ export default function SignupForm() {
 
       // バックエンドにユーザーレコードを登録
       const token = data.session.access_token;
-      await api.post<SignupResponse>("/users/", { email, username }, token);
+      try {
+        await api.post<SignupResponse>("/users/", { email, username }, token);
+      } catch (err) {
+        // FastAPI登録失敗 → クライアント側セッションを破棄
+        await supabase.auth.signOut();
+        setApiError(err instanceof Error ? err.message : "登録に失敗しました");
+        return;
+      }
 
       router.push("/home");
     } catch (err) {
