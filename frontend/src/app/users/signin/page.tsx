@@ -12,7 +12,7 @@ export default function SigninPage() {
       <div className="w-full max-w-md bg-white rounded-2xl shadow-md px-10 py-12">
         {/* ロゴ・サービス説明 */}
         <h1 className="text-3xl font-bold text-primary text-center tracking-tight">
-          enthink
+          Enthink
         </h1>
         <p className="mt-2 text-sm text-text-secondary text-center">
           思考の言語化を通じて、数学的思考力を鍛えるEdTechサービス
