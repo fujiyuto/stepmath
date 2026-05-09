@@ -8,3 +8,4 @@ from .conversation_create_response import ConversationCreateResponse
 from .message_create_response import MessageCreateResponse
 from .universities_get_response import UniversitiesGetResponse
 from .problem_create_response import ProblemCreateResponse
+from .user_problem_info_response import UserProblemInfoResponse, FieldCount
