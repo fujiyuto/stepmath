@@ -33,11 +33,10 @@ async def get_user(
         session: DBセッション
 
     Returns:
-        email: メールアドレス
-        username: ユーザー名 
+        username: ユーザー名
     """
     user = user_service.get_user(user_id, session)
-    return UserGetResponse(email=user.email, username=user.username)
+    return UserGetResponse(username=user.username)
 
 
 @router.post("/")
@@ -61,7 +60,6 @@ async def create_user(
     try:
         user_service.create_user(
             user_id,
-            user_create_request.email,
             user_create_request.username,
             session,
         )
