@@ -52,12 +52,15 @@ export default function EmailEditForm() {
     setIsLoading(true);
     try {
       // Supabase Auth に新しいメールアドレスへの確認メール送信を依頼
-      const { error } = await supabase.auth.updateUser({ email });
+      const { error } = await supabase.auth.updateUser(
+        { email }, 
+        {emailRedirectTo: `${window.location.origin}/users/email/edit/complete`}
+    );
       if (error) {
         setApiError(error.message);
         return;
       }
-      router.push("/users/email/edit/complete");
+      router.push("/users/email/edit/confirm");
     } catch (err) {
       setApiError(err instanceof Error ? err.message : "メールアドレスの変更に失敗しました");
     } finally {
