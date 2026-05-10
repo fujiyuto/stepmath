@@ -1,17 +1,13 @@
-import uuid
-from typing import ClassVar
-
-from pydantic import BaseModel, field_validator, EmailStr, Field
 import re
+
+from pydantic import BaseModel, field_validator, Field
 
 class UserCreateRequest(BaseModel):
     """ユーザー登録時にリクエストクラス
 
-    email：メールアドレス
     username: ユーザー名
     """
 
-    email: EmailStr
     username: str = Field(min_length=3, max_length=30)
 
     @field_validator("username")

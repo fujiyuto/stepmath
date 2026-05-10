@@ -25,12 +25,11 @@ def get_user(user_id: uuid.UUID, session: Session) -> User:
     return user
 
 
-def create_user(id: uuid.UUID, email: str, username: str, session: Session) -> User:
+def create_user(id: uuid.UUID, username: str, session: Session) -> User:
     """ユーザーを登録する。
 
     Args:
         id: SupabaseのユーザーUUID
-        email: メールアドレス
         username: ユーザー名
         session: DBセッション
 
@@ -41,7 +40,7 @@ def create_user(id: uuid.UUID, email: str, username: str, session: Session) -> U
         DatabaseError: DB操作に失敗した場合
     """
     try:
-        user = User(id=id, email=email, username=username)
+        user = User(id=id, username=username)
         session.add(user)
         session.commit()
         session.refresh(user)
