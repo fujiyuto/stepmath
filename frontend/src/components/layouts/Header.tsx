@@ -50,12 +50,24 @@ export default function Header() {
 
         <nav className="flex items-center gap-3">
           {session ? (
-            <Button
-              onClick={handleSignOut}
-              className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary-dark transition-colors cursor-pointer"
-            >
-              ログアウト
-            </Button>
+            <>
+              
+              <Button
+                onClick={handleSignOut}
+                className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary-dark transition-colors cursor-pointer"
+              >
+                ログアウト
+              </Button>
+              <Link
+                href="/users/me"
+                className="p-2 rounded-lg text-primary hover:text-primary-dark transition-colors"
+                aria-label="マイページ"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                </svg>
+              </Link>
+            </>
           ) : (
             <>
               <Link

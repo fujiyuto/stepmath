@@ -12,25 +12,35 @@ type UserGetResponse = {
   username: string;
 };
 
+type UserProblemInfoResponse = {
+  total_count: number;
+  by_field: { label: string; count: number }[];
+};
+
 /**
  * ユーザー詳細画面。基本情報・学習統計・アカウント操作を表示する。
  * @returns ユーザー詳細ページ
  */
 export default function UserMePage() {
   const [user, setUser] = useState<UserGetResponse | null>(null);
+  const [problemInfo, setProblemInfo] = useState<UserProblemInfoResponse | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
   const supabase = createClient();
 
   useEffect(() => {
-    // セッションからトークンを取得してユーザー情報を取得
+    // セッションからトークンを取得してユーザー情報・学習統計を並列取得
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) {
         router.push("/users/signin");
         return;
       }
-      const data = await api.get<UserGetResponse>("/users/me", session.access_token);
-      setUser(data);
+      const [userData, problemData] = await Promise.all([
+        api.get<UserGetResponse>("/users/me", session.access_token),
+        api.get<UserProblemInfoResponse>("/problems/me", session.access_token),
+      ]);
+      setUser(userData);
+      setProblemInfo(problemData);
     });
   }, []);
 
@@ -51,7 +61,7 @@ export default function UserMePage() {
     }
   };
 
-  if (!user) {
+  if (!user || !problemInfo) {
     return (
       <main className="min-h-screen bg-page-bg flex items-center justify-center">
         <p className="text-text-secondary text-sm">読み込み中...</p>
@@ -88,13 +98,15 @@ export default function UserMePage() {
           </h2>
           <dl className="space-y-3">
             <div className="flex justify-between items-center">
-              <dt className="text-sm text-text-secondary">解いた問題数</dt>
-              <dd className="text-sm text-text-tertiary">準備中</dd>
+              <dt className="text-sm text-text-secondary">作成した問題数</dt>
+              <dd className="text-sm font-medium text-text-body">{problemInfo.total_count} 問</dd>
             </div>
-            <div className="flex justify-between items-center">
-              <dt className="text-sm text-text-secondary">解いた分野の内訳</dt>
-              <dd className="text-sm text-text-tertiary">準備中</dd>
-            </div>
+            {problemInfo.by_field.map(({ label, count }) => (
+              <div key={label} className="flex justify-between items-center">
+                <dt className="text-sm text-text-secondary pl-4">{label}</dt>
+                <dd className="text-sm font-medium text-text-body">{count} 問</dd>
+              </div>
+            ))}
           </dl>
         </section>
 
@@ -108,6 +120,13 @@ export default function UserMePage() {
             className="flex justify-between items-center w-full px-4 py-3 rounded-lg hover:bg-surface-hover transition-colors"
           >
             <span className="text-sm text-text-body">プロフィール編集</span>
+            <span className="text-text-tertiary">→</span>
+          </Link>
+          <Link
+            href="/users/email/edit"
+            className="flex justify-between items-center w-full px-4 py-3 rounded-lg hover:bg-surface-hover transition-colors"
+          >
+            <span className="text-sm text-text-body">メールアドレス変更</span>
             <span className="text-text-tertiary">→</span>
           </Link>
           <Button
