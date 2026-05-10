@@ -8,8 +8,8 @@ import Button from "@/components/ui/Button";
  */
 export default function SigninPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center bg-page-bg">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-md px-10 py-12">
+    <main className="min-h-screen pt-24 bg-page-bg">
+      <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-md px-10 py-12">
         {/* ロゴ・サービス説明 */}
         <h1 className="text-3xl font-bold text-primary text-center tracking-tight">
           Enthink

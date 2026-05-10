@@ -122,6 +122,13 @@ export default function UserMePage() {
             <span className="text-sm text-text-body">プロフィール編集</span>
             <span className="text-text-tertiary">→</span>
           </Link>
+          <Link
+            href="/users/email/edit"
+            className="flex justify-between items-center w-full px-4 py-3 rounded-lg hover:bg-surface-hover transition-colors"
+          >
+            <span className="text-sm text-text-body">メールアドレス変更</span>
+            <span className="text-text-tertiary">→</span>
+          </Link>
           <Button
             onClick={handleDeleteAccount}
             isLoading={isDeleting}
