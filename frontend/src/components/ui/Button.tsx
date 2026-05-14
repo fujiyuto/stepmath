@@ -17,7 +17,7 @@ export default function Button({ isLoading, loadingText, children, disabled, cla
   return (
     <button
       disabled={disabled ?? isLoading}
-      className={className}
+      className={`${className} cursor-pointer`}
       {...props}
     >
       {isLoading && loadingText ? loadingText : children}

@@ -74,7 +74,7 @@ export default function SignupForm() {
       // バックエンドにユーザーレコードを登録
       const token = data.session.access_token;
       try {
-        await api.post<SignupResponse>("/users/", { email, username }, token);
+        await api.post<SignupResponse>("/users/", { username }, token);
       } catch (err) {
         // FastAPI登録失敗 → クライアント側セッションを破棄
         await supabase.auth.signOut();
