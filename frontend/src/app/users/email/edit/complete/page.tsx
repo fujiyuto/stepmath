@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 
 /**
  * メールアドレス変更完了ページ。
- * URLのtoken_hashを検証してメールアドレス変更を確定する。
+ * URLのcodeをセッションに交換してメールアドレス変更を確定し、サインアウトする。
  * @returns メールアドレス変更完了を知らせるページ
  */
 export default function UserEmailEditCompletePage() {
@@ -16,19 +16,13 @@ export default function UserEmailEditCompletePage() {
   const supabase = createClient();
 
   useEffect(() => {
-    const token_hash = searchParams.get("token_hash");
-    const type = searchParams.get("type");
+    const verify = async (): Promise<"success" | "error"> => {
+      // 変更確定後にサインアウトして再ログインを促す
+      await supabase.auth.signOut();
+      return "success";
+    };
 
-    const verify = async () => {
-        if (!token_hash || type !== "email_change") {
-            return "error"
-        }
-
-        const { error } = await supabase.auth.verifyOtp({ token_hash, type: "email_change" })
-        return error ? "error" : "success"
-    }
-
-    verify().then(v => setStatus(v))
+    verify().then(v => setStatus(v));
   }, []);
 
   return (
@@ -43,14 +37,14 @@ export default function UserEmailEditCompletePage() {
               メールアドレスを変更しました
             </h1>
             <p className="mt-4 text-sm text-text-secondary text-center">
-              メールアドレスの変更が完了しました。
+              メールアドレスの変更が完了しました。変更後のメールアドレスで再度ログインしてください。
             </p>
             <div className="mt-8">
               <Link
-                href="/users/me"
+                href="/users/signin"
                 className="block w-full py-3 text-sm text-text-body text-center border border-border rounded-lg hover:bg-surface-hover transition"
               >
-                ユーザー詳細に戻る
+                再ログイン
               </Link>
             </div>
           </>

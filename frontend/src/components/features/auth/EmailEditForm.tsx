@@ -22,15 +22,17 @@ type EmailFormErrors = Partial<z.ZodFlattenedError<z.infer<typeof emailSchema>>[
 export default function EmailEditForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
+  const [currentEmail, setCurrentEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<EmailFormErrors>({});
   const [apiError, setApiError] = useState<string | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
-    // 未ログインの場合はサインイン画面へリダイレクト
+    // 未ログインの場合はサインイン画面へリダイレクト、ログイン済みなら現在のemailを取得
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) router.push("/users/signin");
+      setCurrentEmail(session?.user.email ?? "");
     });
   }, []);
 
@@ -46,6 +48,11 @@ export default function EmailEditForm() {
     const result = emailSchema.safeParse({ email });
     if (!result.success) {
       setErrors(z.flattenError(result.error).fieldErrors);
+      return;
+    }
+
+    if (email === currentEmail) {
+      setErrors({ email: ["現在と同じメールアドレスは設定できません"] });
       return;
     }
 
@@ -95,7 +102,7 @@ export default function EmailEditForm() {
           loadingText="送信中..."
           className="flex-1 py-3 bg-primary hover:bg-primary-dark disabled:bg-primary-light text-white text-sm font-medium rounded-lg transition"
         >
-          保存
+          変更
         </Button>
       </div>
     </form>
