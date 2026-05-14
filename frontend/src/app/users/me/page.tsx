@@ -8,9 +8,10 @@ import { api } from "@/lib/api";
 import Button from "@/components/ui/Button";
 
 type UserGetResponse = {
-  email: string;
   username: string;
 };
+
+type UserState = UserGetResponse & { email: string };
 
 type UserProblemInfoResponse = {
   total_count: number;
@@ -22,7 +23,7 @@ type UserProblemInfoResponse = {
  * @returns ユーザー詳細ページ
  */
 export default function UserMePage() {
-  const [user, setUser] = useState<UserGetResponse | null>(null);
+  const [user, setUser] = useState<UserState | null>(null);
   const [problemInfo, setProblemInfo] = useState<UserProblemInfoResponse | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
@@ -39,7 +40,8 @@ export default function UserMePage() {
         api.get<UserGetResponse>("/users/me", session.access_token),
         api.get<UserProblemInfoResponse>("/problems/me", session.access_token),
       ]);
-      setUser(userData);
+      // emailはSupabase Authのセッションから取得
+      setUser({ ...userData, email: session.user.email ?? "" });
       setProblemInfo(problemData);
     });
   }, []);
