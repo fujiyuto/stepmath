@@ -60,7 +60,7 @@ export default function GoogleSigninButton({ mode }: Props) {
                     fill="#EA4335"
                     />
                 </svg>
-                GOOGLEアカウントで{mode === "signin" ? "ログイン" : "登録"}
+                Googleアカウントで{mode === "signin" ? "ログイン" : "登録"}
             </Button>
             {apiError && (
                 <p className="mt-2 text-sm text-error text-center">{apiError}</p>

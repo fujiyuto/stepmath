@@ -3,21 +3,12 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
-import { api } from "@/lib/api";
 import { createClient } from "@/lib/supabase/client";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
-
-type SignupResponse = {
-  message: string;
-};
+import { SUPABASE_ERROR_MESSAGES, DEFAULT_ERROR_MESSAGE } from "../../../../constants/messages";
 
 const signupSchema = z.object({
-  username: z
-    .string()
-    .min(3, "ユーザー名は3〜30文字で入力してください")
-    .max(30, "ユーザー名は3〜30文字で入力してください")
-    .regex(/^[a-zA-Z0-9_]+$/, "ユーザー名は半角英数字とアンダースコアのみ使用できます"),
   email: z.email("有効なメールアドレスを入力してください"),
   password: z.string().min(8, "パスワードは8文字以上で入力してください"),
 });
@@ -26,12 +17,11 @@ type SignupFormErrors = Partial<z.ZodFlattenedError<z.infer<typeof signupSchema>
 
 /**
  * ユーザー登録フォームコンポーネント。
- * Supabase Auth でユーザーを作成し、JWTを使ってバックエンドにユーザーレコードを登録する。
+ * Supabase Auth でユーザーを作成し、プロフィール設定画面へ遷移する。
  * @returns 登録フォーム
  */
 export default function SignupForm() {
   const router = useRouter();
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +29,7 @@ export default function SignupForm() {
   const [apiError, setApiError] = useState<string | null>(null);
 
   /**
-   * フォーム送信ハンドラー。バリデーション → Supabase Auth登録 → バックエンド登録の順で処理する。
+   * フォーム送信ハンドラー。バリデーション後に Supabase Auth でユーザーを登録する。
    * @param e - フォームイベント
    * @returns なし
    */
@@ -48,43 +38,23 @@ export default function SignupForm() {
     setErrors({});
     setApiError(null);
 
-    const result = signupSchema.safeParse({ username, email, password });
-    if (!result.success) {
-      setErrors(z.flattenError(result.error).fieldErrors);
+    const parseResult = signupSchema.safeParse({ email, password });
+    if (!parseResult.success) {
+      setErrors(z.flattenError(parseResult.error).fieldErrors);
       return;
     }
 
     setIsLoading(true);
-    const supabase = createClient();
     try {
-      // Supabase Auth にユーザーを登録
-      const { data, error } = await supabase.auth.signUp({ email, password });
+      const supabase = createClient();
+      const { error } = await supabase.auth.signUp({ email, password });
 
       if (error) {
-        setApiError(error.message);
+        setApiError((error.code && SUPABASE_ERROR_MESSAGES[error.code]) ?? DEFAULT_ERROR_MESSAGE);
         return;
       }
 
-      // メール確認が必要な場合
-      if (!data.session) {
-        setApiError("登録確認メールを送信しました。メールを確認してください。");
-        return;
-      }
-
-      // バックエンドにユーザーレコードを登録
-      const token = data.session.access_token;
-      try {
-        await api.post<SignupResponse>("/users/", { username }, token);
-      } catch (err) {
-        // FastAPI登録失敗 → クライアント側セッションを破棄
-        await supabase.auth.signOut();
-        setApiError(err instanceof Error ? err.message : "登録に失敗しました");
-        return;
-      }
-
-      router.push("/home");
-    } catch (err) {
-      setApiError(err instanceof Error ? err.message : "登録に失敗しました");
+      router.push("/users/me/setup");
     } finally {
       setIsLoading(false);
     }
@@ -105,13 +75,6 @@ export default function SignupForm() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         error={errors.password?.[0]}
-      />
-      <Input
-        type="text"
-        placeholder="ユーザー名"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        error={errors.username?.[0]}
       />
 
       {apiError && (

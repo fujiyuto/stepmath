@@ -1,6 +1,16 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 
 type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE";
+type ApiResult<T> = {
+    result: T
+    ok: true
+} | {
+    result: ErrorResponse
+    ok: false
+}
+type ErrorResponse = {
+    message: string
+}
 
 /**
  * FastAPI バックエンドへのリクエスト共通ラッパー。
@@ -10,7 +20,7 @@ type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE";
  * @param token - Supabase アクセストークン（任意）。渡すと Authorization: Bearer ヘッダーに付与される
  * @returns レスポンスのJSONデータ
  */
-async function request<T>(path: string, method: HttpMethod, body?: unknown, token?: string): Promise<T> {
+async function request<T>(path: string, method: HttpMethod, body?: unknown, token?: string): Promise<ApiResult<T>> {
   const res = await fetch(`${API_BASE_URL}${path}`, {
     method,
     headers: {
@@ -20,12 +30,11 @@ async function request<T>(path: string, method: HttpMethod, body?: unknown, toke
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
 
-  if (!res.ok) {
-    const error = await res.text();
-    throw new Error(`API error ${res.status}: ${error}`);
-  }
+  const result = await res.json()
 
-  return res.json() as Promise<T>;
+  return res.ok
+    ? { result: result as T, ok: true as const }
+    : { result: result as ErrorResponse, ok: false as const }
 }
 
 export const api = {

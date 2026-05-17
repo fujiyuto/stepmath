@@ -26,6 +26,7 @@ export default function UserMePage() {
   const [user, setUser] = useState<UserState | null>(null);
   const [problemInfo, setProblemInfo] = useState<UserProblemInfoResponse | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const router = useRouter();
   const supabase = createClient();
 
@@ -40,9 +41,14 @@ export default function UserMePage() {
         api.get<UserGetResponse>("/users/me", session.access_token),
         api.get<UserProblemInfoResponse>("/problems/me", session.access_token),
       ]);
+
+      if (!userData.ok || !problemData.ok) {
+        setFetchError("情報の取得に失敗しました");
+        return;
+      }
       // emailはSupabase Authのセッションから取得
-      setUser({ ...userData, email: session.user.email ?? "" });
-      setProblemInfo(problemData);
+      setUser({ ...userData.result, email: session.user.email ?? "" });
+      setProblemInfo(problemData.result);
     });
   }, []);
 
@@ -62,6 +68,14 @@ export default function UserMePage() {
       setIsDeleting(false);
     }
   };
+
+  if (fetchError) {
+    return (
+      <main className="min-h-screen bg-page-bg flex items-center justify-center">
+        <p className="text-error text-sm">{fetchError}</p>
+      </main>
+    );
+  }
 
   if (!user || !problemInfo) {
     return (
