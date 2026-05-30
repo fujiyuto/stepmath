@@ -6,14 +6,19 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/client";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
-import { SUPABASE_ERROR_MESSAGES, DEFAULT_ERROR_MESSAGE } from "../../../../constants/messages";
+import {
+  SUPABASE_ERROR_MESSAGES,
+  DEFAULT_ERROR_MESSAGE,
+} from "../../../../constants/messages";
 
 const signupSchema = z.object({
   email: z.email("有効なメールアドレスを入力してください"),
   password: z.string().min(8, "パスワードは8文字以上で入力してください"),
 });
 
-type SignupFormErrors = Partial<z.ZodFlattenedError<z.infer<typeof signupSchema>>["fieldErrors"]>;
+type SignupFormErrors = Partial<
+  z.ZodFlattenedError<z.infer<typeof signupSchema>>["fieldErrors"]
+>;
 
 /**
  * ユーザー登録フォームコンポーネント。
@@ -50,7 +55,10 @@ export default function SignupForm() {
       const { error } = await supabase.auth.signUp({ email, password });
 
       if (error) {
-        setApiError((error.code && SUPABASE_ERROR_MESSAGES[error.code]) ?? DEFAULT_ERROR_MESSAGE);
+        setApiError(
+          (error.code && SUPABASE_ERROR_MESSAGES[error.code]) ??
+            DEFAULT_ERROR_MESSAGE
+        );
         return;
       }
 
@@ -77,9 +85,7 @@ export default function SignupForm() {
         error={errors.password?.[0]}
       />
 
-      {apiError && (
-        <p className="text-sm text-error text-center">{apiError}</p>
-      )}
+      {apiError && <p className="text-sm text-error text-center">{apiError}</p>}
 
       <Button
         type="submit"

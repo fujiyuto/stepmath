@@ -16,13 +16,13 @@
   メソッド：DELETE  
   パス：/users/me
 
-- 機能名：問題一覧取得  
-  メソッド：GET  
-  パス：/problems  
+- 機能名：会話一覧取得
+  メソッド：GET
+  パス：/conversations
 
-- 機能名：問題詳細取得
-  メソッド：GET  
-  パス：/problems/{problem_id}  
+- 機能名：会話詳細取得
+  メソッド：GET
+  パス：/conversations/{id}
 
 - 機能名：会話作成  
   メソッド：POST  
@@ -31,3 +31,11 @@
 - 機能名：チャット送信  
   メソッド：POST
   パス：/conversations/{conversation_id}/messages  
+
+- 機能名：大学情報取得
+  メソッド：GET
+  パス：/universities
+
+- 機能名：ユーザーの問題情報取得
+  メソッド：GET
+  パス：/problems/me

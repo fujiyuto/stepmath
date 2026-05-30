@@ -12,7 +12,9 @@ const signinSchema = z.object({
   password: z.string().min(1, "パスワードを入力してください"),
 });
 
-type SigninFormErrors = Partial<z.ZodFlattenedError<z.infer<typeof signinSchema>>["fieldErrors"]>;
+type SigninFormErrors = Partial<
+  z.ZodFlattenedError<z.infer<typeof signinSchema>>["fieldErrors"]
+>;
 
 /**
  * ログインフォームコンポーネント。
@@ -46,7 +48,10 @@ export default function SigninForm() {
     setIsLoading(true);
     try {
       const supabase = createClient();
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
       if (error) {
         setApiError("メールアドレスまたはパスワードが正しくありません");
@@ -78,9 +83,7 @@ export default function SigninForm() {
         error={errors.password?.[0]}
       />
 
-      {apiError && (
-        <p className="text-sm text-error text-center">{apiError}</p>
-      )}
+      {apiError && <p className="text-sm text-error text-center">{apiError}</p>}
 
       <Button
         type="submit"

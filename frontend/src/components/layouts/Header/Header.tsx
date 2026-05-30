@@ -34,23 +34,15 @@ export default function Header() {
     return () => subscription.unsubscribe();
   }, []);
 
-  /**
-   * ログアウト処理。Supabaseのセッションを削除しサインインページへ遷移する。
-   */
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.push("/users/signin");
-  };
-
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-border h-16">
+    <header className="fixed top-0 left-0 right-0 z-10 bg-white border-b border-border h-16">
       <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
         <Link href="/" className="text-primary font-bold text-3xl">
           Enthink
         </Link>
 
         <nav className="flex items-center gap-3">
-					<HeaderButtonGroup session={session}/>
+          <HeaderButtonGroup session={session} />
         </nav>
       </div>
     </header>

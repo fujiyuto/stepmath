@@ -30,7 +30,7 @@ export default function RootLayout({
     >
       <body className="h-full flex flex-col">
         <Header />
-        <div className="flex flex-col flex-1 overflow-y-auto">{children}</div>
+        <main className="flex flex-col flex-1 overflow-y-auto">{children}</main>
       </body>
     </html>
   );

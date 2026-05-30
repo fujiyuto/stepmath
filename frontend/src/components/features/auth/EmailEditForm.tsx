@@ -12,7 +12,9 @@ const emailSchema = z.object({
   email: z.email("有効なメールアドレスを入力してください"),
 });
 
-type EmailFormErrors = Partial<z.ZodFlattenedError<z.infer<typeof emailSchema>>["fieldErrors"]>;
+type EmailFormErrors = Partial<
+  z.ZodFlattenedError<z.infer<typeof emailSchema>>["fieldErrors"]
+>;
 
 /**
  * メールアドレス変更フォームコンポーネント。
@@ -60,16 +62,22 @@ export default function EmailEditForm() {
     try {
       // Supabase Auth に新しいメールアドレスへの確認メール送信を依頼
       const { error } = await supabase.auth.updateUser(
-        { email }, 
-        {emailRedirectTo: `${window.location.origin}/users/email/edit/complete`}
-    );
+        { email },
+        {
+          emailRedirectTo: `${window.location.origin}/users/email/edit/complete`,
+        }
+      );
       if (error) {
         setApiError(error.message);
         return;
       }
       router.push("/users/email/edit/confirm");
     } catch (err) {
-      setApiError(err instanceof Error ? err.message : "メールアドレスの変更に失敗しました");
+      setApiError(
+        err instanceof Error
+          ? err.message
+          : "メールアドレスの変更に失敗しました"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -85,9 +93,7 @@ export default function EmailEditForm() {
         error={errors.email?.[0]}
       />
 
-      {apiError && (
-        <p className="text-sm text-error text-center">{apiError}</p>
-      )}
+      {apiError && <p className="text-sm text-error text-center">{apiError}</p>}
 
       <div className="mt-2 flex gap-3">
         <Link
@@ -102,7 +108,7 @@ export default function EmailEditForm() {
           loadingText="送信中..."
           className="flex-1 py-3 bg-primary hover:bg-primary-dark disabled:bg-primary-light text-white text-sm font-medium rounded-lg transition"
         >
-          変更
+          保存
         </Button>
       </div>
     </form>

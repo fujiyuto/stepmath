@@ -1,4 +1,5 @@
 import React from "react";
+import Spinner from "./Spinner";
 
 type Props = React.ComponentPropsWithoutRef<"button"> & {
   /** ローディング状態フラグ */
@@ -13,14 +14,28 @@ type Props = React.ComponentPropsWithoutRef<"button"> & {
  * @param loadingText - ローディング中に表示するテキスト
  * @returns ボタン要素
  */
-export default function Button({ isLoading, loadingText, children, disabled, className, ...props }: Props) {
+export default function Button({
+  isLoading,
+  loadingText,
+  children,
+  disabled,
+  className,
+  ...props
+}: Props) {
   return (
     <button
       disabled={disabled ?? isLoading}
       className={`${className} cursor-pointer`}
       {...props}
     >
-      {isLoading && loadingText ? loadingText : children}
+      {isLoading ? (
+        <>
+          <Spinner/>
+          {
+            loadingText && <span className="pl-2">{loadingText}</span>
+          }
+        </>
+      ) : children}
     </button>
   );
 }

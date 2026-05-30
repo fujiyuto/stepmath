@@ -6,14 +6,12 @@ import EmailEditForm from "@/components/features/auth/EmailEditForm";
  */
 export default function UserEmailEditPage() {
   return (
-    <main className="h-screen pt-24 bg-page-bg">
-      <div className="w-lg mx-auto bg-white rounded-2xl shadow-sm px-10 py-12">
-        <h1 className="text-xl font-bold text-text-body text-center">
-          メールアドレスの変更
-        </h1>
+    <div className="w-lg mx-auto bg-white rounded-2xl shadow-sm px-10 py-12">
+      <h1 className="text-xl font-bold text-text-body text-center">
+        メールアドレスの変更
+      </h1>
 
-        <EmailEditForm />
-      </div>
-    </main>
+      <EmailEditForm />
+    </div>
   );
 }
