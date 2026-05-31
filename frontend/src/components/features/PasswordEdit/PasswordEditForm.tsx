@@ -100,6 +100,7 @@ export default function PasswordEditForm() {
         <Button
           type="submit"
           isLoading={isLoading}
+          disabled={isLoading}
           loadingText="変更中..."
           className="flex-1 py-3 bg-primary hover:bg-primary-dark disabled:bg-primary-light text-white text-sm font-medium rounded-lg transition"
         >

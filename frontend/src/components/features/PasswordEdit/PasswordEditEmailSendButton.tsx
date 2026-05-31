@@ -90,13 +90,13 @@ export default function PasswordEditEmailSendButton() {
                   {/** エラーメッセージ */}
                   <p className="text-error">{apiError}</p>
 
-
                   <Button
                     type="button"
-                    className="px-4 py-2 mt-4 w-full rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary-dark transition-colors cursor-pointer"
+                    className="px-4 py-2 mt-4 w-full rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary-dark disabled:bg-primary-light transition-colors cursor-pointer"
                     onClick={handleSendEmailButton}
                     disabled={isLoading}
                     isLoading={isLoading}
+                    loadingText="送信中..."
                   >
                     メールを送信
                   </Button>

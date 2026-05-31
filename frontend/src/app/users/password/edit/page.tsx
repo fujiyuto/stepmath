@@ -1,4 +1,4 @@
-import PasswordEditForm from "@/components/features/auth/PasswordEditForm";
+import PasswordEditForm from "@/components/features/PasswordEdit/PasswordEditForm";
 
 /**
  * パスワード変更入力ページ。

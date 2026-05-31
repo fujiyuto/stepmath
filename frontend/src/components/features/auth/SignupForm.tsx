@@ -93,7 +93,7 @@ export default function SignupForm() {
         loadingText="登録中..."
         className="mt-2 w-full py-3 bg-primary hover:bg-primary-dark disabled:bg-primary-light text-white text-sm font-medium rounded-lg transition"
       >
-        登録する
+        新規登録
       </Button>
     </form>
   );
