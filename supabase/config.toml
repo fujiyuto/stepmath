@@ -241,11 +241,14 @@ otp_expiry = 3600
 # subject = "You have been invited"
 # content_path = "./supabase/templates/invite.html"
 
-# Uncomment to customize notification email template
+[auth.email.template.recovery]
+subject = "パスワード変更"
+content_path = "./supabase/templates/password_reset.html"
+
 # [auth.email.notification.password_changed]
 # enabled = true
 # subject = "Your password has been changed"
-# content_path = "./templates/password_changed_notification.html"
+# content_path = "./supabase/templates/password_changed_notification.html"
 
 [auth.email.template.email_change]
 subject = "メールアドレス確認"
